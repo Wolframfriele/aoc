@@ -1,0 +1,6 @@
+### PyCharm ###
+
+.idea/*
+__pycache__/*
+day_01/__pycache__/*
+day_02/__pycache__/*
