@@ -1,4 +1,4 @@
-
+# import data
 
 passport_raw_data = open('passports.txt', 'r')
 passports_split = passport_raw_data.read().split('\n\n')
@@ -6,28 +6,25 @@ passport_raw_data.close()
 passports = []
 
 
-
 for passport in passports_split:
     passports.append([item.strip() for item in passport.split()])
 
-valid_passports = 0
+passports_clean = []
 
 for passport in passports:
-    valid = 0
+    passports_dict = {}
     for field in passport:
-        if field[:3] == 'byr':
-            valid += 1
-        if field[:3] == 'iyr':
-            valid += 1
-        if field[:3] == 'eyr':
-            valid += 1
-        if field[:3] == 'hgt':
-            valid += 1
-        if field[:3] == 'hcl':
-            valid += 1
-        if field[:3] == 'ecl':
-            valid += 1
-        if field[:3] == 'pid':
+        passports_dict[field[:3]] = field[4:]
+    passports_clean.append(passports_dict)
+
+valid_passports = 0
+
+checks = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
+
+for passport in passports_clean:
+    valid = 0
+    for key in passport:
+        if key in checks:
             valid += 1
     if valid == 7:
         valid_passports += 1
