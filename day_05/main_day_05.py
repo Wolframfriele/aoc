@@ -44,12 +44,18 @@ class ReadBoardingPass(object):
         return (row * 8) + column
 
 
+
+
 boarding = ReadBoardingPass(boarding_passes)
 
+# find the highest ID
 id_list = []
 for i in range(len(boarding)):
     id_list.append(boarding.return_id(i))
 
 print(sorted(id_list)[-1:])
 
-
+# find seat ID that is being skipped
+for i, id in enumerate(sorted(id_list)):
+    if id != (sorted(id_list)[i + 1] - 1):
+        print(id+1)
