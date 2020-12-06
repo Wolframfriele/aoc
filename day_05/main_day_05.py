@@ -1,6 +1,3 @@
-import math
-
-
 # Import Boarding Passes into list
 boarding_passes_input = open('boarding_passes.txt', 'r')
 boarding_passes = boarding_passes_input.read().split()
