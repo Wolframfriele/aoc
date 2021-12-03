@@ -1,7 +1,6 @@
 """
 Set of functions to better import data and chop it to a workable format.
 """
-
 class ReadAndSplit(object):
     input_data = ''
     data_array = []
@@ -26,7 +25,7 @@ class ReadAndSplit(object):
         else:
             return self.data_array[index]
 
-    def split_break(self, numeric_data=False):
+    def split_break(self, data_type="str"):
         """If there is no temp data, it returns the data object split by breaks and stores it in data_array.
         If the data_array already contains data (a previous split), this function uses that data and returns a
         break split for each item in the array."""
@@ -39,7 +38,7 @@ class ReadAndSplit(object):
                 temp.append(item.split('\n'))
             self.data_array = temp
 
-        if numeric_data:
+        if data_type == "int":
             temp = []
             for i in self.data_array:
                 temp.append(int(i))
