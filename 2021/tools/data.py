@@ -45,19 +45,37 @@ class ReadAndSplit(object):
 
             self.data_array = temp
 
-    # def split_double_break(self):
-    #     """If there is no temp data, it returns the data object split by double breaks and stores it in data_array.
-    #     If the data_array already contains data (a previous split), this function uses that data and returns a double
-    #     break split for each item in the array."""
+    def split_double_break(self):
+        """If there is no temp data, it returns the data object split by double breaks and stores it in data_array.
+        If the data_array already contains data (a previous split), this function uses that data and returns a double
+        break split for each item in the array."""
 
-    #     if len(self.data_array) == 0:
-    #         self.data_array = self.input_data.split('\n\n')
-    #         return self.input_data.split('\n\n')
-    #     else:
-    #         temp = []
-    #         for item in self.data_array:
-    #             temp.append(item.split('\n\n'))
-    #         self.data_array = temp
-    #         return temp
+        if len(self.data_array) == 0:
+            self.data_array = self.input_data.split('\n\n')
+        else:
+            temp = []
+            for item in self.data_array:
+                temp.append(item.split('\n\n'))
+            self.data_array = temp
 
-    
+    def split_on(self, split_sign, data_type):
+        """If there is no temp data, it returns the data object split by
+        the chosen split sign and stores it in data_array.
+        If the data_array already contains data (a previous split),
+        this function uses that data and returns a split for each item in the array."""
+
+        if len(self.data_array) == 0:
+            self.data_array = self.input_data.split(split_sign)
+        else:
+            temp = []
+            for item in self.data_array:
+                temp.append(item.split(split_sign))
+            self.data_array = temp
+
+        if data_type == "int":
+            temp = []
+            for i in self.data_array:
+                temp.append(int(i))
+
+            self.data_array = temp
+
