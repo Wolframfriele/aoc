@@ -58,7 +58,7 @@ class ReadAndSplit(object):
                 temp.append(item.split('\n\n'))
             self.data_array = temp
 
-    def split_on(self, split_sign, data_type):
+    def split_on(self, split_sign, data_type="str"):
         """If there is no temp data, it returns the data object split by
         the chosen split sign and stores it in data_array.
         If the data_array already contains data (a previous split),
@@ -67,15 +67,22 @@ class ReadAndSplit(object):
         if len(self.data_array) == 0:
             self.data_array = self.input_data.split(split_sign)
         else:
-            temp = []
+            temp_1 = []
             for item in self.data_array:
-                temp.append(item.split(split_sign))
-            self.data_array = temp
-
-        if data_type == "int":
-            temp = []
-            for i in self.data_array:
-                temp.append(int(i))
-
-            self.data_array = temp
+                if type(item) == list:
+                    temp_2 = []
+                    for i in item:
+                        if data_type == "int":
+                            lst_int = [int(x) for x in i.split(split_sign)]
+                            temp_2.append(lst_int)
+                        elif data_type == "str":
+                            temp_2.append(i.split(split_sign))
+                    temp_1.append(temp_2)
+                else:
+                    if data_type == "int":
+                        lst_int = [int(x) for x in item.split(split_sign)]
+                        temp_1.append(lst_int)
+                    elif data_type == "str":
+                        temp_1.append(item.split(split_sign))
+            self.data_array = temp_1
 

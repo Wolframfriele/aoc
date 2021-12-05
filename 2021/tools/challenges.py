@@ -2,6 +2,8 @@
 Tools that are probably unique to each days challenge
 """
 from statistics import multimode
+from itertools import count, zip_longest
+from typing import Counter
 
 class DepthControl(object):
     def __init__(self):
@@ -191,3 +193,66 @@ class Bingo(object):
                         self.not_won_cards.remove(i)
                     except:
                         pass
+
+class Lines(object):
+    # input_data = []
+    # line_map = []
+
+    def __init__(self, input_data):
+        self.input_data = input_data
+        max_x = 0
+        max_y = 0
+        for lines in input_data:
+            for points in lines:
+                if points[0] > max_x:
+                    max_x = points[0]
+                if points[1] > max_y:
+                    max_y = points[1]
+        self.line_map = []
+        for y in range(max_y + 1):
+            empty_horizontal = []
+            for x in range(max_x + 1):
+                empty_horizontal.append(0)
+            self.line_map.append(empty_horizontal)
+    
+    def __repr__(self):
+        output = ""
+        for text_line in self.line_map:
+            str_line = " ".join("{0}".format(n) for n in text_line)
+            str_line += "\n"
+            output += str_line
+        return output
+
+    def draw_line(self, start_coor, end_coor):
+        x_coor = [start_coor[0], end_coor[0]]
+        y_coor = [start_coor[1], end_coor[1]]
+        for y, x in zip_longest(range(min(y_coor), (max(y_coor) + 1)), range(min(x_coor), (max(x_coor) + 1))):
+            if y == None:
+                y = min(y_coor)
+            if x == None:
+                x = min(x_coor)
+
+            self.line_map[y][x] += 1
+        
+    def check_horizontal_or_vertical(self, start_coor, end_coor):
+        return start_coor[0] == end_coor[0] or start_coor[1] == end_coor[1]
+
+    def find_overlap(self):
+        counter = 0
+        for y in self.line_map:
+            for x in y:
+                if x >= 2:
+                    counter += 1
+        return counter
+
+    def find_danger_zone(self, no_diagonal=True):
+        for start_coor, end_coor in self.input_data:
+            if no_diagonal:
+                if self.check_horizontal_or_vertical(start_coor, end_coor):
+                    self.draw_line(start_coor, end_coor)
+            else:
+                if not self.check_horizontal_or_vertical(start_coor, end_coor):
+                    print(start_coor, end_coor)
+                self.draw_line(start_coor, end_coor)
+        
+        return self.find_overlap()
