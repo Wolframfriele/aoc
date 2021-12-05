@@ -224,13 +224,28 @@ class Lines(object):
         return output
 
     def draw_line(self, start_coor, end_coor):
-        x_coor = [start_coor[0], end_coor[0]]
-        y_coor = [start_coor[1], end_coor[1]]
-        for y, x in zip_longest(range(min(y_coor), (max(y_coor) + 1)), range(min(x_coor), (max(x_coor) + 1))):
+        x_direction = 1
+        y_direction = 1
+        x_start_pad = 0
+        x_end_pad = 1
+        y_start_pad = 0
+        y_end_pad = 1
+        if end_coor[0] < start_coor[0]:
+            x_direction = -1
+            x_start_pad = 0
+            x_end_pad = -1
+        if end_coor[1] < start_coor[1]:
+            y_direction = -1
+            y_start_pad = 0
+            y_end_pad = -1
+        for y, x in zip_longest(range((start_coor[1] + y_start_pad), (end_coor[1] + y_end_pad), y_direction), 
+                                range((start_coor[0] + x_start_pad), (end_coor[0] + x_end_pad), x_direction)):
+            # print(x, y)
+            
             if y == None:
-                y = min(y_coor)
+                y = start_coor[1]
             if x == None:
-                x = min(x_coor)
+                x = end_coor[0]
 
             self.line_map[y][x] += 1
         
@@ -247,12 +262,11 @@ class Lines(object):
 
     def find_danger_zone(self, no_diagonal=True):
         for start_coor, end_coor in self.input_data:
+            # print(start_coor, end_coor)
             if no_diagonal:
                 if self.check_horizontal_or_vertical(start_coor, end_coor):
                     self.draw_line(start_coor, end_coor)
             else:
-                if not self.check_horizontal_or_vertical(start_coor, end_coor):
-                    print(start_coor, end_coor)
                 self.draw_line(start_coor, end_coor)
         
         return self.find_overlap()
