@@ -2,8 +2,8 @@
 Tools that are probably unique to each days challenge
 """
 from statistics import multimode
-from itertools import count, zip_longest
-from typing import Counter
+from itertools import zip_longest
+import numpy as np
 
 class DepthControl(object):
     def __init__(self):
@@ -270,3 +270,31 @@ class Lines(object):
                 self.draw_line(start_coor, end_coor)
         
         return self.find_overlap()
+
+class LantarnFish(object):
+    def __init__(self, start_population):
+        self.population = []
+        self.population = [start_population]
+    
+    def add_day(self, day):
+        new_day = []
+        new_born = 0
+        for fish in self.population[(day - 1)]:
+            if fish == 0:
+                new_day.append(6)
+                new_born += 1
+            else:
+                new_day.append(fish -1)
+        
+        for born in range(new_born):
+            new_day.append(8)
+        self.population.append(new_day)
+
+    def check_pop_size(self, day):
+        return len(self.population[day])
+
+    def simulate_fish(self, till_day):
+        for day in range(1, (till_day + 1)):
+            self.add_day(day)
+            # print(f"After {day} days: ", self.population[day])
+        return self.check_pop_size(till_day)

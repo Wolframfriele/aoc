@@ -65,7 +65,7 @@ class ReadAndSplit(object):
         this function uses that data and returns a split for each item in the array."""
 
         if len(self.data_array) == 0:
-            self.data_array = self.input_data.split(split_sign)
+            self.data_array = [int(x) for x in self.input_data.split(split_sign)]
         else:
             temp_1 = []
             for item in self.data_array:
