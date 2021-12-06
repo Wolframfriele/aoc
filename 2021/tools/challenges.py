@@ -4,6 +4,7 @@ Tools that are probably unique to each days challenge
 from statistics import multimode
 from itertools import zip_longest
 import numpy as np
+from tqdm import tqdm
 
 class DepthControl(object):
     def __init__(self):
@@ -271,15 +272,14 @@ class Lines(object):
         
         return self.find_overlap()
 
-class LantarnFish(object):
+class LantarnFishList(object):
     def __init__(self, start_population):
-        self.population = []
-        self.population = [start_population]
+        self.day = start_population
     
-    def add_day(self, day):
+    def add_day(self):
         new_day = []
         new_born = 0
-        for fish in self.population[(day - 1)]:
+        for fish in self.day:
             if fish == 0:
                 new_day.append(6)
                 new_born += 1
@@ -288,13 +288,50 @@ class LantarnFish(object):
         
         for born in range(new_born):
             new_day.append(8)
-        self.population.append(new_day)
+        self.day = new_day
 
-    def check_pop_size(self, day):
-        return len(self.population[day])
+    def check_pop_size(self):
+        return len(self.day)
 
-    def simulate_fish(self, till_day):
+    def simulate_fish(self, till_day, save_results=False):
+        if save_results:
+            self.X = []
+            self.y = []
         for day in range(1, (till_day + 1)):
-            self.add_day(day)
+            self.add_day()
             # print(f"After {day} days: ", self.population[day])
-        return self.check_pop_size(till_day)
+            if save_results:
+                self.X.append(day)
+                self.y.append(self.check_pop_size())
+        if save_results:
+            return self.X, self.y
+        return self.check_pop_size()
+
+class LantarnFish(object):
+    def __init__(self, start_population):
+        self.previous_day = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0}
+        for i in start_population:
+            self.previous_day[i] += 1
+        # print(self.previous_day)
+
+    def new_day(self):
+        new_day = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0}
+        for i in new_day:
+            if i == 0:
+                new_day[6] = self.previous_day[0]
+                new_day[8] = self.previous_day[0]
+            else:
+                new_day[i - 1] += self.previous_day[i]
+        self.previous_day = new_day
+
+    def check_pop_size(self):
+        total_fish = 0
+        for i in self.previous_day:
+            total_fish += self.previous_day[i]
+        return total_fish
+
+    def simulate_fish(self, days):
+        for day in range(days):
+            self.new_day()
+            # print(day+1, self.previous_day)
+        return self.check_pop_size()
