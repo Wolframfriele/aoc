@@ -1,5 +1,4 @@
-### PyCharm ###
-
+.gitignore
 .idea/*
 __pycache__/*
 day_01/__pycache__/*

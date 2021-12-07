@@ -98,11 +98,6 @@ class ReadDiagnostics(object):
         return oxy_rate * co2_rate
 
 class Bingo(object):
-    bingo_numbers = []
-    bingo_cards = []
-    game_state = []
-    not_won_cards = []
-    won_cards = []
 
     def __init__(self, bingo_numbers, bingo_cards):
         self.bingo_numbers = []
