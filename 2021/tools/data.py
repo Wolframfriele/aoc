@@ -87,7 +87,6 @@ class ReadAndSplit(object):
             self.data_array = temp_1
 
 class ReadData(object):
-    split = None
     def __init__(self, path, lines=True, read_int=False):
         with open(path, "r") as f:
             if lines:
@@ -111,8 +110,6 @@ class ReadData(object):
         return self.data.pop(index)
 
     def special_split(self, sign=None, make_int=False):
-        # def split_on(string):
-        #     return string.split(sign)
         def recursive_split(data):
             if type(data) == str:
                 if make_int:
@@ -121,9 +118,9 @@ class ReadData(object):
             elif type(data) == list:
                 if type(data[0]) == str:
                     if make_int:
-                        return [int(o) for o in [i.split(sign) for i in data]]
+                        temp = [i.split(sign) for i in data]
+                        return [int(i) for i in temp]
                     return [i.split(sign) for i in data]
                 elif type(data[0]) == list:
                     return [list(map(recursive_split, i)) for i in data]
-        
         self.data = recursive_split(self.data)
