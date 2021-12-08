@@ -5,7 +5,7 @@ from tools.data import ReadData
 data = ReadData("2021/data/7.txt", lines=False, read_int=False)
 data.special_split(",", make_int=True)
 
-# print(data)
+print(data)
 class CrabLine(object):
     def __init__(self, crab_positions) -> None:
         self.crab_positions = np.array(crab_positions)
