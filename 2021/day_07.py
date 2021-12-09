@@ -25,7 +25,7 @@ class CrabLine(object):
         cheapest_pos = 0
         cheapest_cost = float("inf")
 
-        search_start = np.median(self.crab_positions)
+        search_start = int(np.mean(self.crab_positions))
 
         for pos in np.arange(search_start, self.crab_positions.max()):
             curr_cost = self.calc_cost(pos, crab_engineering)
