@@ -2,7 +2,7 @@ import re
 from tools.data import ReadData
 
 ### Parse input ###
-data = ReadData("2021/data/10_t.txt", lines=True, read_int=False)
+data = ReadData("2021/data/10.txt", lines=True, read_int=False)
 print(len(data))
 
 class bcolors:
@@ -11,9 +11,9 @@ class bcolors:
     RESET = '\033[0m' #RESET COLOR
 
 class SyntaxChecker(object):
-    score_table = {")": 3, "]": 57, "}": 1197, ">": 25137}
     def __init__(self, navigation_data) -> None:
         self.navigation_data = navigation_data
+        self.matched_lines = []
         super().__init__()
 
     def check_legal_line(self, line):
@@ -39,12 +39,52 @@ class SyntaxChecker(object):
                         matched[i] = 2
                         matched[x] = 2
                         self.print_matched(string, matched)
+                        self.matched_lines.append(matched)
                         return False, char
                 else:
                     # self.print_matched(string, matched)
+                    self.matched_lines.append(matched)
                     return False, char
         # self.print_matched(string, matched)
+        self.matched_lines.append(matched)
         return True, None
+
+    def discard_corrupt_lines(self):
+        score_table = {")": 3, "]": 57, "}": 1197, ">": 25137}
+        score = 0
+        discard = []
+        for line in range(len(self.navigation_data)):
+            legal, char = self.check_legal_line(line)
+            if not legal:
+                discard.append(line)
+                score += score_table[char]
+        for i in discard[::-1]:
+            self.navigation_data.pop_data(i)
+            self.matched_lines.pop(i)
+        return score
+
+    def complete_lines(self):
+        all_scores = []
+        score_table = {"(":1, "[": 2, "{": 3, "<": 4}
+        look_up = {'<': '>', '(': ')', '[': ']', '{': ']'}
+        for i, line in enumerate(self.navigation_data):
+            score = 0
+            queue = []
+            matched = self.matched_lines[i]
+            # self.print_matched(line, matched)
+            for x, match in enumerate(matched):
+                if match == 0:
+                    queue.append(line[x])
+            queue.reverse()
+            for char in queue:
+                score = score * 5
+                score += score_table[char]
+            all_scores.append(score)
+
+        all_scores.sort()
+        midle = len(all_scores) // 2
+        return all_scores[midle]
+
 
     def print_matched(self, string, matched):
         for i, char in enumerate(string):
@@ -56,17 +96,9 @@ class SyntaxChecker(object):
                 print(bcolors.RESET + char + bcolors.RESET, end = " ")
         print("")
 
-    def discard_corrupt_lines(self):
-        score = 0
-        discard = []
-        for line in range(len(self.navigation_data)):
-            legal, char = self.check_legal_line(line)
-            if not legal:
-                discard.append(line)
-                score += self.score_table[char]
-        for i in discard[::-1]:
-            self.navigation_data.pop_data(i)
-        return score
-
+# Part 1
 checker = SyntaxChecker(data)
 print(checker.discard_corrupt_lines())
+
+# Part 2
+print(checker.complete_lines())
