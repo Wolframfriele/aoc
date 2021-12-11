@@ -1,4 +1,3 @@
-import re
 from tools.data import ReadData
 
 ### Parse input ###
