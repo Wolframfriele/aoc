@@ -2,8 +2,7 @@ from statistics import multimode
 from tools.data import ReadData
 
 ### Parse input ###
-diag_report = ReadData("2021/data/3_t.txt", lines=True, read_int=False)
-diag_report.special_split("\n")
+diag_report = ReadData("2021/data/3.txt", lines=True, read_int=False)
 
 class ReadDiagnostics(object):
     bit_array = []
@@ -94,7 +93,7 @@ class ReadDiagnostics(object):
 
 # Part 1
 diagnostics = ReadDiagnostics(diag_report)
-diagnostics.get_power_consumption()
+print(diagnostics.get_power_consumption())
 
 # Part 2
-diagnostics.get_life_support_rating()
+print(diagnostics.get_life_support_rating())
