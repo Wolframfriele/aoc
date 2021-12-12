@@ -37,7 +37,6 @@ class PassagePathing(object):
     def check_node(self, current_node, route, visited_double):
         current_route = route.copy()
         current_route.append(current_node)
-        # print(current_node)
         if current_node == 'end':
             self.routes.append(current_route)
         # check if in small cave without back track option
@@ -78,9 +77,14 @@ class PassagePathing(object):
                 shortest = len(route)
         print('The shortest route has a length of: ', shortest)
 
+
 # Part 1
 cave_maps = PassagePathing(data)
 # cave_maps.print_input()
-cave_maps.find_routes(allow_double_small=True)
+cave_maps.find_routes(allow_double_small=False)
 # cave_maps.print_routes()
+cave_maps.find_shortest_route()
+
+# Part 2
+cave_maps.find_routes(allow_double_small=True)
 cave_maps.find_shortest_route()
