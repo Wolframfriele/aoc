@@ -7,6 +7,7 @@ lantern_start_pop.special_split(',', make_int=True)
 class LantarnFish(object):
     def __init__(self, start_population):
         self.previous_day = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0}
+        
         for i in start_population:
             self.previous_day[i] += 1
 

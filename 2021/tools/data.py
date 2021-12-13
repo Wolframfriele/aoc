@@ -119,7 +119,7 @@ class ReadData(object):
                 if type(data[0]) == str:
                     if make_int:
                         temp = [i.split(sign) for i in data]
-                        return [int(i) for i in temp]
+                        return [[int(i) for i in top] for top in temp]
                     return [i.split(sign) for i in data]
                 elif type(data[0]) == list:
                     return [list(map(recursive_split, i)) for i in data]

@@ -28,12 +28,6 @@ class PassagePathing(object):
         self.routes = []
         super().__init__()
 
-    def print_input(self):
-        print('Navigation Dictionary:')
-        for key in self.nav_dict:
-            print(key,'\t', self.nav_dict[key])
-        print('\n')
-
     def check_node(self, current_node, route, visited_double):
         current_route = route.copy()
         current_route.append(current_node)
@@ -62,6 +56,12 @@ class PassagePathing(object):
         else:
             for new_node in self.nav_dict['start']:
                 self.check_node(new_node, route, visited_double=True)
+
+    def print_input(self):
+        print('Navigation Dictionary:')
+        for key in self.nav_dict:
+            print(key,'\t', self.nav_dict[key])
+        print('\n')
 
     def print_routes(self):
         print('The found routes are:')
