@@ -46,7 +46,7 @@ class FoldingPaper(object):
             if i[1] > max_y:
                 max_y = i[1]
         # create dots for all coordinates
-        line = ['.' for i in range(max_x + 1)]
+        line = [' ' for i in range(max_x + 1)]
         paper = [line.copy() for i in range(max_y + 1)]
 
         for point in self.dots:
