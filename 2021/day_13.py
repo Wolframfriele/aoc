@@ -41,10 +41,11 @@ class FoldingPaper(object):
         # Find paper size
         max_x, max_y = 0, 0
         for i in self.dots:
-            if i[0] > max_x:
-                max_x = i[0]
-            if i[1] > max_y:
-                max_y = i[1]
+            x, y = i
+            if x > max_x:
+                max_x = x
+            if y > max_y:
+                max_y = y
         # create dots for all coordinates
         line = [' ' for i in range(max_x + 1)]
         paper = [line.copy() for i in range(max_y + 1)]
