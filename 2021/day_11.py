@@ -53,7 +53,7 @@ class SimulateFlashes(object):
                 self.flash(index)
 
     def simulate_for(self, end_step):
-        for i in range(1, end_step + 1):
+        for __ in range(1, end_step + 1):
             self.increment_step()
             print(f'Step: {self.step}, amount of flashes: {self.flash_counter}')
 

@@ -12,18 +12,12 @@ class Polymerization(object):
         super().__init__()
 
     def extend_polymer(self, polymer_template, steps):
-        # for element in polymer_template:
-        #     self.elements[element] = self.elements.get(element, 0) + 1
-        # print(self.pairs, '\n')
         for idx, __ in enumerate(polymer_template):
             pair = polymer_template[idx-1:idx+1]
-            # print(pair)
             if pair in self.pairs:
                 self.pairs[pair] += 1
-        # print(self.pairs, '\n')
         for __ in range(steps):
             self.poly_extend_iteration()
-            # print(self.pairs, '\n')
         self.update_elements()
         self.commom_elements()
 
