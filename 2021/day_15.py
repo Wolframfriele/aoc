@@ -1,8 +1,9 @@
 import numpy as np
+from queue import PriorityQueue
 from tools.data import ReadData
 
 ### Parse input ###
-risk_map = ReadData("2021/data/15_t.txt", lines=True, read_int=False)
+risk_map = ReadData("2021/data/15.txt", lines=True, read_int=False)
 
 class Graph:
     dirs = ((0, -1), (0, 1), (-1, 0), (1, 0))
@@ -29,11 +30,31 @@ class Graph:
             risk.append(self.grid[y, x])
         return risk
 
+    def extend_graph(self, times):
+        new_graph = self.grid
+        extend_x = self.grid
+        for __ in range(times):
+            extend_x = (extend_x + 1) % 10
+            if_zero = extend_x == 0
+            extend_x[if_zero] = 1
+            new_graph = np.append(new_graph, extend_x, 1)
+        extend_y = new_graph
+        for __ in range(times):
+            extend_y = (extend_y + 1) % 10
+            if_zero = extend_y == 0
+            extend_y[if_zero] = 1
+            new_graph = np.append(new_graph, extend_y, 0)
+        self.grid = new_graph
+        # Update max values
+        self.max_x = len(self.grid[0]) - 1
+        self.max_y = len(self.grid) - 1
+
 class FindShortest:
     def __init__(self, graph: Graph) -> None:
         self.graph = graph
         self.lowest_weight = {}
-        super().__init__()                    
+        self.explore = PriorityQueue()
+        super().__init__()
 
     def find_route(self, start=(0,0), goal=None):
         if goal is None:
@@ -41,34 +62,33 @@ class FindShortest:
 
         # label nodes to inf except start
         self.lowest_weight[start] = 0
+        self.explore.put((self.lowest_weight[start], start))
         
-        # explore = PriorityQueue()
-        explore.put((self.lowest_weight[start], start))
-        
-        while not explore.empty():
-            # print(f'Current node: {current}')
-            current = explore.get()
-            current_weight, current_node = current
-            neighbors = self.graph.get_neighbors(current_node)
-            neighbor_weights = self.graph.get_weight(neighbors)
-            
-            # update lowest_weight
-            current_lowest_weight = self.lowest_weight[current]
-            for neighbor_weight, neighbor in zip(neighbor_weights, neighbors):
+        while not self.explore.empty():
+            current = self.explore.get()
+            current_weight_in_queue, current_node = current
+            current_lowest_weight = self.lowest_weight[current_node]
+            if current_lowest_weight == current_weight_in_queue:
+                neighbors = self.graph.get_neighbors(current_node)
+                neighbor_weights = self.graph.get_weight(neighbors)
                 
-                neighbor_total_weight = current_lowest_weight + neighbor_weight
-
-                if neighbor_total_weight < self.lowest_weight.get(neighbor, float('inf')):
-                    self.lowest_weight[neighbor] = neighbor_total_weight
+                # Update lowest found dictionary
+                for neighbor_weight, neighbor in zip(neighbor_weights, neighbors):
+                    neighbor_total_weight = current_lowest_weight + neighbor_weight
+                    if neighbor_total_weight < self.lowest_weight.get(neighbor, float('inf')):
+                        self.lowest_weight[neighbor] = neighbor_total_weight
+                        self.explore.put((neighbor_total_weight, neighbor))
                     
-
-
-        print('Reached goal')
         return self.lowest_weight[goal]
 
 # Part 1
+# graph = Graph(risk_map)
+# maps = FindShortest(graph)
+# print(maps.find_route())
+
+# Part 2
 graph = Graph(risk_map)
+graph.extend_graph(4)
 maps = FindShortest(graph)
 print(maps.find_route())
 
-# Part 2

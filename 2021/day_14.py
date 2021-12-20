@@ -55,4 +55,4 @@ class Polymerization(object):
 # Part 1
 poly = Polymerization(polymer_rules_read)
 # poly.extend_polymer('NNCB', steps=40) # Test code
-poly.extend_polymer('SHHBNFBCKNHCNOSHHVFF', steps=10)
+poly.extend_polymer('SHHBNFBCKNHCNOSHHVFF', steps=40)
