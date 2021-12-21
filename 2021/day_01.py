@@ -24,7 +24,7 @@ class DepthChecker(object):
         for i in range(len(sea_depth)):
             try:
                 sliding_window = self.sea_depth[i] + self.sea_depth[(i+1)] + self.sea_depth[(i+2)]
-            except:
+            except IndexError:
                 break
             if sliding_window > curr_depth:
                 counter += 1

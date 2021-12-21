@@ -49,7 +49,8 @@ class Polymerization(object):
                 min_value, min_key = value, key
             if value > max_value:
                 max_value, max_key = value, key
-        print(f'Most common: {max_value, max_key}, least common: {min_value, min_key}')
+        print(f'Most common: {max_value, max_key},\
+                least common: {min_value, min_key}')
         print(f'answer = {(max_value - min_value) // 2}')
 
 # Part 1
