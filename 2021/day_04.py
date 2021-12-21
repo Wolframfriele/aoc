@@ -72,10 +72,10 @@ class Bingo(object):
 
     def get_card_score(self, card):
         total_score = 0
-        for y, line in enumerate(self.game_state[card]):
+        for y, line in enumerate(self.game_state[card[0]]):
             for x, entry in enumerate(line):
                 if entry == False:
-                    total_score += self.bingo_cards[card][y][x]
+                    total_score += self.bingo_cards[card[0]][y][x]
         return total_score
 
     def get_win_score(self, current_num, winning_card):
@@ -109,7 +109,7 @@ class Bingo(object):
 
 # Part 1
 bingo = Bingo(bingo_numbers, bingo_cards)
-# bingo.find_winning_board()
+print(bingo.find_winning_board())
 
 # Part 2
-print(bingo.last_winning_board())
+# print(bingo.last_winning_board())
