@@ -50,14 +50,6 @@ class RunDay(ABC):
     def part_2(self, data):
         """Return the answer for part 2"""
 
-    def set_test_part_1(self, test) -> None:
-        """Set answer to test part 1 against"""
-        self.test_part_1 = test
-
-    def set_test_part_2(self, test) -> None:
-        """Set answer to test part 2 against"""
-        self.test_part_2 = test
-
     def run(self) -> None:
         """Runs test code until answer matches test case."""
         test_data = self.parse_input(self.day, test=True)
