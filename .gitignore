@@ -1,6 +1,7 @@
-.gitignore
-.idea/*
-__pycache__/*
-day_01/__pycache__/*
-day_02/__pycache__/*
-2021/tools/__pycache__
+python/.idea/*
+python/__pycache__/*
+python/day_01/__pycache__/*
+python/day_02/__pycache__/*
+python/2021/tools/__pycache__
+rust/target
+rust/target/*
