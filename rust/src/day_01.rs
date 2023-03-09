@@ -30,7 +30,8 @@ fn part_b(input: &str) -> u32 {
     return index
 }
 
-fn main() {
+pub fn run_day() {
+    println!("AoC Day 1.");
     let file = include_str!("../input/day_01_real.txt");
     let answer_a = part_a(file);
     println!("Answer A: {answer_a}");

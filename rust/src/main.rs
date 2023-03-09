@@ -1,37 +1,34 @@
-use std::vec;
+use clap::Parser;
+mod day_01;
+mod day_02;
 
-fn calculate_area(l: u32, w: u32, h: u32) -> u32 {
-    let side_a: u32 = l * w;
-    let side_b: u32 = w * h;
-    let side_c: u32 = h * l;
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+   /// The AOC day to run
+   #[arg(short, long, default_value = None)]
+   day: Option<u8>,
 
-    let smallest: u32 = *vec![side_a, side_b, side_c].iter().min().unwrap();
-
-    return 2 * side_a + 2 * side_b + 2 * side_c + smallest
+   /// If all day's need to be run
+   #[arg(short, long)]
+   all: bool,
 }
-
-fn part_a(input: &str) -> u32 {
-    let mut total_area: u32 = 0;
-    for line in input.trim().lines() {
-        let mut lengths = line.split("x");
-        let l = lengths.next().unwrap().parse::<u32>().unwrap();
-        let w = lengths.next().unwrap().parse::<u32>().unwrap();
-        let h = lengths.next().unwrap().parse::<u32>().unwrap();
-
-        total_area += calculate_area(l, w, h)
-    }
-    return total_area
-
-}
-
-// fn part_b(input: &str) -> u32 {
-
-// }
 
 fn main() {
-    let file = include_str!("../input/day_02_real.txt");
-    let answer_a = part_a(file);
-    println!("Answer A: {answer_a}");
-    // let answer_b = part_b(file);
-    // println!("Answer B: {answer_b}");
+   let args = Args::parse();
+
+    if args.all {
+        println!("All day's will be run")
+    } else {
+        match args.day {
+            None => println!("Run last day"),
+            Some(num) => {
+                match num {
+                    1 => day_01::run_day(),
+                    2 => day_02::run_day(),
+                    _ => println!("Day not implemented.")
+                }
+            }
+        }
+    } 
 }
