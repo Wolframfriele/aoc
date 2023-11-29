@@ -1,5 +1,6 @@
 from unittest import TestCase
 from queue import Queue
+from dataclasses import dataclass
 
 A = 1
 B = 10
@@ -15,7 +16,7 @@ D = 1000
 
 ## Convert to graph
 
-#  ABCDEFGHIJKLMN
+#   ABCDEFGHIJKLMN
 # 1"#############" Way to represent coordinates, left to right If somethig is # ignore it.
 # 2"#...........#" If something is a . add it as a node + check neighbors and add those as directions
 # 3"###B#C#B#D###" Each letter is tied to a location
@@ -31,6 +32,25 @@ D = 1000
 # amphipod = {
 #   position, goal, movement_cost
 # }
+
+@dataclass
+class Amphipod:
+    position: str
+    goal: str
+    movement_cost: int
+
+
+class Parser:
+
+    def __init__(self, input: str) -> None:
+        self.input = input
+
+    def get_walls(self, input: str) -> None:
+        pass
+
+@dataclass
+class Graph:
+    pass    
 
 class Solver:
 
