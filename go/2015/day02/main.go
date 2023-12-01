@@ -18,7 +18,6 @@ func calcWrappingPaper(lengths []int) int {
 func solveA(input string) int {
 	var total_paper int
 	lines := strings.Split(input, "\n")
-	fmt.Println(len(lines))
 	for _, line := range lines {
 		split_line := strings.Split(line, "x")
 
@@ -30,6 +29,9 @@ func solveA(input string) int {
 		total_paper += calcWrappingPaper(ints)
 	}
 	return total_paper
+}
+
+func solveB(input string) int {
 }
 
 func main() {

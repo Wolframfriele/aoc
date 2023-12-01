@@ -30,6 +30,19 @@ func TestGetNumber(t *testing.T) {
 	}
 }
 
+func TestSolveA(t *testing.T) {
+	input := `1abc2
+pqr3stu8vwx
+a1b2c3d4e5f
+treb7uchet`
+	got := solveB(input)
+	want := 142
+
+	if got != want {
+		t.Errorf("got %q, wanted %q", got, want)
+	}
+}
+
 func TestSolveB(t *testing.T) {
 	input := `two1nine
 eightwothree

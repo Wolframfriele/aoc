@@ -8,9 +8,6 @@ import (
 	"unicode"
 )
 
-// Find the calibration digit by combining the first and last digit in the string.
-// Sum all calibration values
-
 func getNumber(line string, i int, accept_word bool) rune {
 	if unicode.IsDigit(rune(line[i])) {
 		return rune(line[i])
@@ -57,6 +54,8 @@ func findDigits(line string, accept_word bool) int {
 }
 
 func solveA(input string) int {
+	// Find the calibration digit by combining the first and last digit in the string.
+	// Sum all calibration values
 	sum := 0
 	lines := strings.Split(input, "\n")
 	for _, line := range lines {
@@ -66,6 +65,9 @@ func solveA(input string) int {
 }
 
 func solveB(input string) int {
+	// Find the calibratinon digits by combining the first and last digit in the string
+	// words like one, two etc also represent digits
+	// Sum the found calibration values
 	sum := 0
 	lines := strings.Split(input, "\n")
 	for _, line := range lines {
