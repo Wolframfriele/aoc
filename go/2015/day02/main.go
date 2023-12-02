@@ -8,15 +8,19 @@ import (
 	"strings"
 )
 
-func calcWrappingPaper(lengths []int) int {
+func calcWrappingPaperA(lengths []int) int {
 	//* 2*l*w + 2*w*h + 2*h*l
 	// + smallest side
-	sort.Ints(lengths)
 	return 3*(lengths[0]*lengths[1]) + 2*(lengths[0]*lengths[2]) + 2*(lengths[1]*lengths[2])
 }
 
-func solveA(input string) int {
-	var total_paper int
+func calcWrappingPaperB(lengths []int) int {
+	// 2 * smalles + 2 * mid
+	// + l * w * h for bow
+	return (2 * lengths[0]) + (2 * lengths[1]) + (lengths[0] * lengths[1] * lengths[2])
+}
+
+func solve(input string) (paperSumA, paperSumB int) {
 	lines := strings.Split(input, "\n")
 	for _, line := range lines {
 		split_line := strings.Split(line, "x")
@@ -26,12 +30,11 @@ func solveA(input string) int {
 		for i, s := range split_line {
 			ints[i], _ = strconv.Atoi(s)
 		}
-		total_paper += calcWrappingPaper(ints)
+		sort.Ints(ints)
+		paperSumA += calcWrappingPaperA(ints)
+		paperSumB += calcWrappingPaperB(ints)
 	}
-	return total_paper
-}
-
-func solveB(input string) int {
+	return
 }
 
 func main() {
@@ -39,6 +42,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	result := solveA(string(input))
-	fmt.Println(result)
+	resultA, resultB := solve(string(input))
+	fmt.Println(resultA)
+	fmt.Println(resultB)
 }
