@@ -18,53 +18,59 @@ type Game struct {
 	selections []Selection
 }
 
+func parseSelection(selectionStr string) (selection Selection) {
+	kubes := strings.Split(selectionStr, ", ")
+	for _, kube := range kubes {
+		valueKeyStr := strings.Split(kube, " ")
+		switch valueKeyStr[1] {
+		case "green":
+			amount, err := strconv.Atoi(valueKeyStr[0])
+			if err != nil {
+				fmt.Printf("Could not convert %v to integer", valueKeyStr)
+				break
+			}
+			selection.green = amount
+		case "blue":
+			amount, err := strconv.Atoi(valueKeyStr[0])
+			if err != nil {
+				fmt.Printf("Could not convert to number for %v.", valueKeyStr)
+				break
+			}
+			selection.blue = amount
+		case "red":
+			amount, err := strconv.Atoi(valueKeyStr[0])
+			if err != nil {
+				fmt.Printf("Could not convert to number for %v.", valueKeyStr)
+				break
+			}
+			selection.red = amount
+		}
+	}
+	return
+}
+
+func parseGame(line string) (game Game) {
+	splitResult := strings.Split(line[5:], ": ")
+	gameIndStr, allSelectionsStr := splitResult[0], splitResult[1]
+	gameInd, err := strconv.Atoi(gameIndStr)
+	if err != nil {
+		fmt.Printf("Coult not convert %v to integer", gameIndStr)
+	}
+	allSelectionsSlice := strings.Split(allSelectionsStr, "; ")
+	game.id = gameInd
+	for _, selectionStr := range allSelectionsSlice {
+		game.selections = append(game.selections, parseSelection(selectionStr))
+	}
+	return
+}
+
 func parseInput(input string) (games []Game) {
 	lines := strings.Split(input, "\n")
 	for _, line := range lines {
 		if line == "" {
 			break
 		}
-		splitResult := strings.Split(line[5:], ": ")
-		gameIndStr, allSelectionsStr := splitResult[0], splitResult[1]
-		gameInd, err := strconv.Atoi(gameIndStr)
-		if err != nil {
-			fmt.Printf("Coult not convert %v to integer", gameIndStr)
-		}
-		allSelectionsSlice := strings.Split(allSelectionsStr, "; ")
-		var selections []Selection
-		game := Game{gameInd, selections}
-		for _, selectionStr := range allSelectionsSlice {
-			kubes := strings.Split(selectionStr, ", ")
-			selection := Selection{}
-			for _, kube := range kubes {
-				valueKeyStr := strings.Split(kube, " ")
-				switch valueKeyStr[1] {
-				case "green":
-					amount, err := strconv.Atoi(valueKeyStr[0])
-					if err != nil {
-						fmt.Printf("Could not convert %v to interger in game %v.\n", valueKeyStr, gameIndStr)
-						break
-					}
-					selection.green = amount
-				case "blue":
-					amount, err := strconv.Atoi(valueKeyStr[0])
-					if err != nil {
-						fmt.Printf("Could not convert to number for %v in game %v", valueKeyStr, gameIndStr)
-						break
-					}
-					selection.blue = amount
-				case "red":
-					amount, err := strconv.Atoi(valueKeyStr[0])
-					if err != nil {
-						fmt.Printf("Could not convert to number for %v in game %v", valueKeyStr, gameIndStr)
-						break
-					}
-					selection.red = amount
-				}
-			}
-			game.selections = append(game.selections, selection)
-		}
-		games = append(games, game)
+		games = append(games, parseGame(line))
 	}
 	return
 }
