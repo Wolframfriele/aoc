@@ -5,3 +5,10 @@ python/day_02/__pycache__/*
 python/2021/tools/__pycache__
 rust/target
 rust/target/*
+
+# Recursively ignore all files named "input.txt" (whatever you named it)
+**/input.txt
+
+# Recursively ignore all files matching ".txt"
+**/*.txt
+
