@@ -30,7 +30,7 @@ func convertToIntSlice(stringSlice string) (intSlice []int) {
 	for _, numStr := range split {
 		num, err := strconv.Atoi(numStr)
 		if err != nil {
-			fmt.Printf("Coult not convert %v to integer", numStr)
+			fmt.Printf("Coult not convert (%v) to integer\n", numStr)
 		}
 		intSlice = append(intSlice, num)
 	}
@@ -40,9 +40,9 @@ func convertToIntSlice(stringSlice string) (intSlice []int) {
 func parseCard(line string) (card Card) {
 	splitResult := strings.Split(line[5:], ": ")
 	gameIndStr, cardNumbers := splitResult[0], splitResult[1]
-	gameInd, err := strconv.Atoi(gameIndStr)
+	gameInd, err := strconv.Atoi(strings.TrimSpace(gameIndStr))
 	if err != nil {
-		fmt.Printf("Coult not convert %v to integer", gameIndStr)
+		fmt.Printf("Coult not convert (%v) to integer\n", gameIndStr)
 	}
 	card.id = gameInd
 	splitNumbers := strings.Split(cardNumbers, " | ")
@@ -55,8 +55,8 @@ func parseCard(line string) (card Card) {
 }
 
 func Contains(checkIn []int, checkFor int) bool {
-	for _, str := range checkIn {
-		if str == checkFor {
+	for _, num := range checkIn {
+		if num == checkFor {
 			return true
 		}
 	}
@@ -65,24 +65,40 @@ func Contains(checkIn []int, checkFor int) bool {
 
 func solveA(cards map[int]Card) (sum int) {
 	for _, card := range cards {
-		gamePoints := 0
+		cardPoints := 0
 		for _, code := range card.second {
 			if Contains(card.first, code) {
-				if gamePoints == 0 {
-					gamePoints = 1
+				if cardPoints == 0 {
+					cardPoints = 1
 				} else {
-					gamePoints *= 2
+					cardPoints *= 2
 				}
 			}
 		}
-		sum += gamePoints
+		sum += cardPoints
 	}
 	return
 }
 
-//	func solveB(games []Game) (sum int) {
-//		//		return
-//	}
+func solveB(cards map[int]Card) (amountOfCards int) {
+	cardCopies := make(map[int]int)
+	amountOfCards += len(cards)
+
+	for i := 1; i <= len(cards); i++ {
+		amountOfCards += cardCopies[i]
+		matchCount := 0
+		for _, code := range cards[i].second {
+			if Contains(cards[i].first, code) {
+				matchCount++
+			}
+		}
+		for j := 1; j <= matchCount; j++ {
+			cardCopies[cards[i].id+j] += 1 + 1*cardCopies[cards[i].id]
+		}
+	}
+	return
+}
+
 func main() {
 	input, err := os.ReadFile("2023/day04/input.txt")
 	if err != nil {
@@ -92,6 +108,6 @@ func main() {
 	resultA := solveA(games)
 	fmt.Printf("Result A: %v\n", resultA)
 
-	// resultB := solveB(games)
-	// fmt.Printf("Result B: %v\n", resultB)
+	resultB := solveB(games)
+	fmt.Printf("Result B: %v\n", resultB)
 }
