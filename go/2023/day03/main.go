@@ -4,118 +4,169 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-
-	/* 	"strconv" */
 	"strings"
 	"unicode"
 )
 
-type NumberPos struct {
-	line  int
-	start int
-	end   int
+type Coordinate struct {
+	Y int
+	X int
 }
 
-func findNumbers(lines []string) (numbers []NumberPos) {
+type NumberStore struct {
+	numbers  map[Coordinate]int
+	adjacent map[int]int
+}
+
+func (store *NumberStore) AddNumber(y, x, n int) {
+	if store.numbers == nil {
+		store.numbers = make(map[Coordinate]int)
+	}
+	if store.adjacent == nil {
+		store.adjacent = make(map[int]int)
+	}
+	store.numbers[Coordinate{y, x}] = n
+}
+
+type SymbolStore struct {
+	gears map[Coordinate]map[int]bool
+	all   map[Coordinate]bool
+}
+
+func (store *SymbolStore) AddSymbol(y, x int, s rune) {
+	if store.all == nil {
+		store.all = map[Coordinate]bool{}
+	}
+	if store.gears == nil {
+		store.gears = map[Coordinate]map[int]bool{}
+	}
+	if s == '*' {
+		store.all[Coordinate{y, x}] = true
+		store.gears[Coordinate{y, x}] = map[int]bool{}
+	} else {
+		store.all[Coordinate{y, x}] = true
+	}
+}
+
+func parseNumber(line string, x int) (num int) {
+	temp := ".." + line + ".."
+	start := x
+	end := x + 5
+	if !unicode.IsDigit(rune(temp[start+1])) {
+		start = x + 2
+	}
+	if !unicode.IsDigit(rune(temp[x+3])) {
+		end = x + 3
+	}
+	trimmed := strings.Trim(temp[start:end], ".-+=#&/%$@*<>!+_")
+	num, err := strconv.Atoi(trimmed)
+	if err != nil {
+		panic(err)
+	}
+	return
+}
+
+func parseInput(input string) (numbersStore NumberStore, symbolStore SymbolStore) {
+	lines := strings.Split(string(input), "\n")
 	for y, line := range lines {
-		inNum := false
-		currentNum := NumberPos{}
-		currentNum.line = y
-		for i, char := range line {
-			if inNum == false && unicode.IsDigit(char) {
-				inNum = true
-				currentNum.start = i
-				// check around number
-			} else if inNum && !unicode.IsDigit(char) {
-				currentNum.end = i - 1
-				numbers = append(numbers, currentNum)
-				inNum = false
-			}
+		if len(line) == 0 {
+			continue
 		}
-		if inNum {
-			currentNum.end = len(line) - 1
-			numbers = append(numbers, currentNum)
-			inNum = false
+		for x, char := range line {
+			if char == '.' {
+				continue
+			} else if unicode.IsDigit(char) {
+				numbersStore.AddNumber(y, x, parseNumber(line, x))
+			} else {
+				symbolStore.AddSymbol(y, x, char)
+			}
 		}
 	}
 	return
 }
 
-func isSymbol(char rune) bool {
-	return !unicode.IsDigit(char) && char != '.'
+var check = []Coordinate{
+	{-1, 0},
+	{-1, 1},
+	{0, 1},
+	{1, 1},
+	{1, 0},
+	{1, -1},
+	{0, -1},
+	{-1, -1},
 }
 
-func numberIsAdjecentToSymbol(num NumberPos, lines []string) bool {
-	if num.line > 0 {
-		y := num.line - 1
-		if num.start > 0 && isSymbol(rune(lines[y][num.start-1])) {
-			return true
-		}
-		for _, char := range lines[y][num.start : num.end+1] {
-			if isSymbol(char) {
-				return true
-			}
-		}
-		if num.end+1 < len(lines[y]) && isSymbol(rune(lines[y][num.end+1])) {
-			return true
-		}
-	}
-	y := num.line
-	if num.start > 0 && isSymbol(rune(lines[y][num.start-1])) {
-		return true
-	}
-	if num.end+1 < len(lines[y]) && isSymbol(rune(lines[y][num.end+1])) {
-		return true
-	}
-	if num.line+1 < len(lines) {
-		y := num.line + 1
-		if num.start > 0 && isSymbol(rune(lines[y][num.start-1])) {
-			return true
-		}
-		for _, char := range lines[y][num.start : num.end+1] {
-			if isSymbol(char) {
-				return true
-			}
-		}
-		if num.end+1 < len(lines[y]) && isSymbol(rune(lines[y][num.end+1])) {
+func findAdjacentSymbols(coor Coordinate, store *SymbolStore) bool {
+	for _, neighbor := range check {
+		neigborCoor := coor
+		neigborCoor.Y += neighbor.Y
+		neigborCoor.X += neighbor.X
+		_, ok := store.all[neigborCoor]
+		if ok {
 			return true
 		}
 	}
 	return false
 }
 
-func convertNumToInt(num NumberPos, lines []string) (number int) {
-	number, err := strconv.Atoi(lines[num.line][num.start : num.end+1])
-	if err != nil {
-		panic(err)
-	}
-	return
-}
-
-func solveA(lines []string) (sum int) {
-	numbers := findNumbers(lines)
-	for _, num := range numbers {
-		if numberIsAdjecentToSymbol(num, lines) {
-			sum += convertNumToInt(num, lines)
+func findAdjacentNumber(coor Coordinate, store *NumberStore) (numbers []int) {
+	for _, neighbor := range check {
+		neigborCoor := coor
+		neigborCoor.Y += neighbor.Y
+		neigborCoor.X += neighbor.X
+		num, ok := store.numbers[neigborCoor]
+		if ok {
+			numbers = append(numbers, num)
 		}
 	}
 	return
 }
 
-// func solveB(games []Game) (sum int) {
-//
-// 	return
-// }
+func solveA(numStore NumberStore, symStore SymbolStore) (sum int) {
+	for coor, num := range numStore.numbers {
+		if findAdjacentSymbols(coor, &symStore) {
+			numStore.adjacent[num] += 1
+		}
+	}
+	for num, count := range numStore.adjacent {
+		if count > 0 {
+			sum += count * num
+		}
+	}
+	return
+}
+
+func solveB(numStore NumberStore, symStore SymbolStore) (sum int) {
+	for coor := range symStore.gears {
+		neighbors := findAdjacentNumber(coor, &numStore)
+		if len(neighbors) > 0 {
+			for _, neighbor := range neighbors {
+				symStore.gears[coor][neighbor] = true
+			}
+		}
+	}
+	for _, neighbors := range symStore.gears {
+		if len(neighbors) == 2 {
+			mul := 1
+			for key := range neighbors {
+				mul *= key
+			}
+			sum += mul
+		}
+	}
+
+	return
+}
 
 func main() {
 	input, err := os.ReadFile("2023/day03/input.txt")
 	if err != nil {
 		panic(err)
 	}
-	lines := strings.Split(string(input), "\n")
-	resultA := solveA(lines)
+	numbers, symbols := parseInput(string(input))
+	resultA := solveA(numbers, symbols)
 	fmt.Printf("Result A: %v\n", resultA)
 
-	// resultB := solveB(games)
-	// fmt.Printf("Result B: %v\n", resultB)
+	resultB := solveB(numbers, symbols)
+	fmt.Printf("Result B: %v\n", resultB)
 }
