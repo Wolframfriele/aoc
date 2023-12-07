@@ -4,33 +4,22 @@ import (
 	"testing"
 )
 
-const example = `467..114..
-..*.......
-..35..633.
-......#...
-617*......
-.....+.58.
-..592.....
-......755.
-...$.*....
-.664.598..`
-
 func TestParseInput(t *testing.T) {
 	input := `467..11...
 ...*...#..
 ..35......`
 	gotNumberStore, gotSymbolStore := parseInput(input)
 	wantNumberStore := new(NumberStore)
-	wantNumberStore.numbers = map[Coordinate]int{
-		{0, 0}: 467,
-		{0, 1}: 467,
-		{0, 2}: 467,
-		{0, 5}: 11,
-		{0, 6}: 11,
-		{2, 2}: 35,
-		{2, 3}: 35,
+	wantNumberStore.numbers = map[Coordinate]Number{
+		{0, 0}: {value: 467, y: 0, start: 0},
+		{0, 1}: {value: 467, y: 0, start: 0},
+		{0, 2}: {value: 467, y: 0, start: 0},
+		{0, 5}: {value: 11, y: 0, start: 5},
+		{0, 6}: {value: 11, y: 0, start: 5},
+		{2, 2}: {value: 35, y: 2, start: 2},
+		{2, 3}: {value: 35, y: 2, start: 2},
 	}
-	wantNumberStore.adjacent = make(map[int]int)
+	wantNumberStore.adjacent = make(map[Number]int)
 	for i := range gotNumberStore.numbers {
 		if gotNumberStore.numbers[i] != wantNumberStore.numbers[i] {
 			t.Errorf("got %v, wanted %v", gotNumberStore.numbers[i], wantNumberStore.numbers[i])
@@ -41,7 +30,7 @@ func TestParseInput(t *testing.T) {
 		{1, 3}: true,
 		{1, 7}: true,
 	}
-	wantSymbolStore.gears = map[Coordinate][]int{
+	wantSymbolStore.gears = map[Coordinate]map[int]bool{
 		{1, 3}: {},
 	}
 	for i := range gotSymbolStore.all {
@@ -59,23 +48,43 @@ func TestParseInput(t *testing.T) {
 
 type ParseNumberTest struct {
 	line string
+	y    int
 	x    int
-	want int
+	want Number
 }
 
 func TestParseNumber(t *testing.T) {
 	inputs := []ParseNumberTest{
-		{"..175..", 2, 175},
-		{"275..", 1, 275},
-		{"2.375..", 2, 375},
-		{".44..", 2, 44},
-		{".5..", 1, 5},
-		{"62.5", 1, 62},
+		{"..175..", 1, 2, Number{value: 175, y: 1, start: 2}},
+		{"275..", 2, 1, Number{value: 275, y: 2, start: 0}},
+		{"2.375..", 2, 2, Number{value: 375, y: 2, start: 2}},
+		{".44..", 3, 2, Number{value: 44, y: 3, start: 1}},
+		{".5..", 5, 1, Number{value: 5, y: 5, start: 1}},
+		{"62.5", 6, 1, Number{value: 62, y: 6, start: 0}},
 	}
 	for _, input := range inputs {
-		result := parseNumber(input.line, input.x)
+		result := parseNumber(input.line, input.y, input.x)
 		if result != input.want {
 			t.Errorf("got %v, wanted %v from input %v", result, input.want, input.line)
+		}
+	}
+}
+
+type AddCoorTest struct {
+	coorA    Coordinate
+	CoorB    Coordinate
+	expected Coordinate
+}
+
+func TestAddCoor(t *testing.T) {
+	inputs := []AddCoorTest{
+		{Coordinate{10, 10}, Coordinate{1, 1}, Coordinate{11, 11}},
+		{Coordinate{10, 10}, Coordinate{-1, -1}, Coordinate{9, 9}},
+	}
+	for _, input := range inputs {
+		got := input.coorA.addCoor(input.CoorB)
+		if got != input.expected {
+			t.Errorf("Got %v want %v", got, input.expected)
 		}
 	}
 }
@@ -104,27 +113,21 @@ func TestFindAdjecent(t *testing.T) {
 	}
 }
 
-func TestSolveA(t *testing.T) {
-	numbers, symbols := parseInput(example)
-	got := solveA(numbers, symbols)
-	want := 4361
-
-	if got != want {
-		t.Errorf("got %v, wanted %v", got, want)
-	}
-	input := `467....412
+const example = `467..114..
 ..*.......
-1.35..633.
-......#.22
+..35..633.
+......#...
 617*......
 .....+.58.
 ..592.....
 ......755.
 ...$.*....
 .664.598..`
-	numbers, symbols = parseInput(input)
-	got = solveA(numbers, symbols)
-	want = 4361
+
+func TestSolveA(t *testing.T) {
+	numbers, symbols := parseInput(example)
+	got := solveA(numbers, symbols)
+	want := 4361
 
 	if got != want {
 		t.Errorf("got %v, wanted %v", got, want)
