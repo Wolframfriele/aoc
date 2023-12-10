@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 )
 
@@ -30,6 +31,15 @@ func TestGetNumber(t *testing.T) {
 	}
 }
 
+func TestFindDigits(t *testing.T) {
+	got := findDigits("a2bcd3ds4c", false)
+	want := 24
+
+	if got != want {
+		t.Errorf("got %q, wanted %q", got, want)
+	}
+}
+
 func TestSolveA(t *testing.T) {
 	input := `1abc2
 pqr3stu8vwx
@@ -40,6 +50,16 @@ treb7uchet`
 
 	if got != want {
 		t.Errorf("got %q, wanted %q", got, want)
+	}
+}
+
+func BenchmarkSolveA(b *testing.B) {
+	input, err := os.ReadFile("input.txt")
+	if err != nil {
+		panic(err)
+	}
+	for i := 0; i < b.N; i++ {
+		solveA(string(input))
 	}
 }
 
@@ -59,11 +79,12 @@ zoneight234
 	}
 }
 
-func TestFindDigits(t *testing.T) {
-	got := findDigits("a2bcd3ds4c", false)
-	want := 24
-
-	if got != want {
-		t.Errorf("got %q, wanted %q", got, want)
+func BenchmarkSolveB(b *testing.B) {
+	input, err := os.ReadFile("input.txt")
+	if err != nil {
+		panic(err)
+	}
+	for i := 0; i < b.N; i++ {
+		solveB(string(input))
 	}
 }
