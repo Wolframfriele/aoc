@@ -4,32 +4,14 @@ import (
 	"testing"
 )
 
-// func TestParseConversionMap(t *testing.T) {
-// 	mapStr := `seed-to-soil map:
-// 50 98 2
-// 52 50 48`
-// 	got := parseConversionMap(mapStr)
-// 	want := []ConversionPath{
-// 		{50, 98, 2},
-// 		{52, 50, 48},
-// 	}
-// 	for i := range got {
-// 		if got[i].dest != want[i].dest ||
-// 			got[i].source != want[i].source ||
-// 			got[i].difference != want[i].rangeLen {
-// 			t.Errorf("got %v, wanted %v", got[i], want[i])
-// 		}
-// 	}
-// }
-
 func TestParseConversionMap(t *testing.T) {
 	mapStr := `seed-to-soil map:
 50 98 2
 52 50 48`
 	got := parseConversionMap(mapStr)
 	want := []ConversionPath{
-		{98, 100, 48},
-		{50, 98, -2},
+		{98, 99, 48},
+		{50, 97, -2},
 	}
 	for i := range got {
 		if got[i].start != want[i].start ||
@@ -49,6 +31,39 @@ func TestConvertInput(t *testing.T) {
 	want := 81
 	if got != want {
 		t.Errorf("got %v, wanted %v", got, want)
+	}
+}
+
+// no number in path
+// in   [10, 15]
+// conv {20, 25, 5}
+// out  [[10, 15]]
+
+type ConvertRangeTest struct {
+	inputRanges   [][]int
+	conversionMap []ConversionPath
+	outputRange   [][]int
+}
+
+func TestConvertRange(t *testing.T) {
+	tests := []ConvertRangeTest{
+		{inputRanges: [][]int{{10, 15}}, conversionMap: []ConversionPath{{3, 20, -5}}, outputRange: [][]int{{15, 20}}},
+		{inputRanges: [][]int{{10, 15}}, conversionMap: []ConversionPath{{12, 20, 2}}, outputRange: [][]int{{10, 11}, {10, 13}}},
+		{inputRanges: [][]int{{10, 15}}, conversionMap: []ConversionPath{{5, 12, 2}}, outputRange: [][]int{{8, 10}, {13, 15}}},
+		{inputRanges: [][]int{{10, 15}}, conversionMap: []ConversionPath{{20, 25, -5}}, outputRange: [][]int{{10, 15}}},
+		{inputRanges: [][]int{{79, 92}, {55, 67}}, conversionMap: []ConversionPath{{98, 99, 48}, {50, 97, -2}}, outputRange: [][]int{{81, 94}, {57, 69}}},
+		{inputRanges: [][]int{{79, 100}, {45, 67}}, conversionMap: []ConversionPath{{98, 99, 48}, {50, 97, -2}}, outputRange: [][]int{{81, 99}, {98, 100}, {45, 49}, {52, 69}}},
+		{inputRanges: [][]int{{1, 50}}, conversionMap: []ConversionPath{{15, 20, -5}}, outputRange: [][]int{{1, 14}, {10, 15}, {21, 50}}},
+	}
+	for _, test := range tests {
+		result := convertRange(test.inputRanges, test.conversionMap)
+		for i := range result {
+			for j := range result[i] {
+				if result[i][j] != test.outputRange[i][j] {
+					t.Errorf("Wanted %v, got %v", test.outputRange[i][j], result[i][j])
+				}
+			}
+		}
 	}
 }
 
@@ -96,8 +111,8 @@ func TestParseInput(t *testing.T) {
 	}
 	collectionWant := [][]ConversionPath{
 		{
-			{98, 100, 48},
-			{50, 98, -2},
+			{98, 99, 48},
+			{50, 97, -2},
 		},
 	}
 	for i := range collectionWant[0] {
