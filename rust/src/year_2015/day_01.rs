@@ -8,7 +8,7 @@ fn part_a(input: &str) -> i32 {
             _ => continue,
         }
     }
-    return floor_counter
+    return floor_counter;
 }
 
 fn part_b(input: &str) -> u32 {
@@ -22,17 +22,16 @@ fn part_b(input: &str) -> u32 {
             _ => continue,
         }
         if floor_counter < 0 {
-           break
-                
+            break;
         }
         index += 1;
     }
-    return index
+    return index;
 }
 
 pub fn run_day() {
     println!("AoC Day 1.");
-    let file = include_str!("../input/day_01_real.txt");
+    let file = include_str!("../../../input/2015/day_01.txt");
     let answer_a = part_a(file);
     println!("Answer A: {answer_a}");
     let answer_b = part_b(file);

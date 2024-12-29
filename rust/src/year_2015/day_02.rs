@@ -40,7 +40,7 @@ fn part_b(input: &str) -> u32 {
 }
 
 pub fn run_day() {
-    let file = include_str!("../input/day_02_real.txt");
+    let file = include_str!("../../../input/2015/day_02.txt");
     let answer_a = part_a(file);
     println!("Answer A: {answer_a}");
     let answer_b = part_b(file);
