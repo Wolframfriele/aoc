@@ -15,7 +15,10 @@ struct Args {
 
 fn run_single_day(day: Option<u8>) {
     match day {
-        None => println!("Run last day"),
+        None => {
+            println!("Run last day");
+            day_03::run_day();
+        }
         Some(num) => match num {
             1 => day_01::run_day(),
             2 => day_02::run_day(),
@@ -29,7 +32,10 @@ fn main() {
     let args = Args::parse();
 
     if args.all {
-        println!("All day's will be run")
+        println!("All day's will be run");
+        day_01::run_day();
+        day_02::run_day();
+        day_03::run_day();
     } else {
         run_single_day(args.day);
     }
