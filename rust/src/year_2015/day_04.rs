@@ -10,6 +10,11 @@ fn first_five_chars_not_zero(digest: md5::Digest) -> bool {
     !(hex_digest[0..5] == *"00000")
 }
 
+fn first_six_chars_not_zero(digest: md5::Digest) -> bool {
+    let hex_digest = format!("{:x}", digest);
+    !(hex_digest[0..6] == *"000000")
+}
+
 fn part_a(input: &str) -> u32 {
     let mut number = 0;
 
@@ -22,14 +27,24 @@ fn part_a(input: &str) -> u32 {
     number
 }
 
-// fn part_b(input: &str) -> u32 {}
+fn part_b(input: &str) -> u32 {
+    let mut number = 0;
+
+    let mut digest = calculate_digest(input, number);
+    while first_six_chars_not_zero(digest) {
+        number += 1;
+        digest = calculate_digest(input, number);
+    }
+
+    number
+}
 
 pub fn run_day() {
     let file = include_str!("../../../input/2015/day_04.txt").trim();
     let answer_a = part_a(file);
     println!("Answer A: {answer_a}");
-    //    let answer_b = part_b(file);
-    //    println!("Answer B: {answer_b}");
+    let answer_b = part_b(file);
+    println!("Answer B: {answer_b}");
 }
 
 #[cfg(test)]
