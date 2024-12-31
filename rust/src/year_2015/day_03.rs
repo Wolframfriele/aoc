@@ -54,6 +54,10 @@ impl DeliveryUnit {
     fn delivery_count(&self) -> usize {
         self.seen.len()
     }
+
+    fn combined_count(&self, other: &HashSet<Coordinate>) -> usize {
+        self.seen.union(other).count()
+    }
 }
 
 fn part_a(input: &str) -> u32 {
@@ -64,16 +68,25 @@ fn part_a(input: &str) -> u32 {
     santa.delivery_count() as u32
 }
 
-// fn part_b(input: &str) -> u32 {
-
-// }
+fn part_b(input: &str) -> u32 {
+    let mut santa = DeliveryUnit::new();
+    let mut robo_santa = DeliveryUnit::new();
+    for (i, direction) in input.chars().enumerate() {
+        if i % 2 == 0 {
+            santa.move_in_direction(direction);
+        } else {
+            robo_santa.move_in_direction(direction);
+        }
+    }
+    santa.combined_count(&robo_santa.seen) as u32
+}
 
 pub fn run_day() {
     let file = include_str!("../../../input/2015/day_03.txt");
     let answer_a = part_a(file);
     println!("Answer A: {answer_a}");
-    // let answer_b = part_b(file);
-    // println!("Answer B: {answer_b}");
+    let answer_b = part_b(file);
+    println!("Answer B: {answer_b}");
 }
 
 #[cfg(test)]
@@ -99,5 +112,26 @@ mod tests {
         let input = "^v^v^v^v^v";
         let result = part_a(input);
         assert_eq!(result, 2);
+    }
+
+    #[test]
+    fn part_b_test_1() {
+        let input = "^v";
+        let result = part_b(input);
+        assert_eq!(result, 3);
+    }
+
+    #[test]
+    fn part_b_test_2() {
+        let input = "^>v<";
+        let result = part_b(input);
+        assert_eq!(result, 3);
+    }
+
+    #[test]
+    fn part_b_test_3() {
+        let input = "^v^v^v^v^v";
+        let result = part_b(input);
+        assert_eq!(result, 11);
     }
 }
