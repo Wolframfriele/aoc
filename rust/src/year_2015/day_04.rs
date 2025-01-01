@@ -1,5 +1,10 @@
 use md5;
 
+// in hexadecimal each char represents 4 bits
+// so the first 5 chars being 0 is the same as the first 20 bits being 0
+// and the first 6 chars being 0 is the same as the first 24 bits being 0:q
+// 
+
 fn calculate_digest(key: &str, number: u32) -> md5::Digest {
     let combined = format!("{}{}", key, number);
     md5::compute(combined)
